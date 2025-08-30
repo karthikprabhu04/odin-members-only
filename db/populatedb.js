@@ -29,7 +29,7 @@ async function main() {
       const hashedPassword2 = await bcrypt.hash('secret456', 10)
       const hashedPassword3 = await bcrypt.hash('mypassword', 10)
       await client.query(`
-        INSERT INTO users (first_name, last_name, username, password, membershipStatus) VALUES
+        INSERT INTO users (first_name, last_name, username, password, membershipstatus) VALUES
           ('Bryan', 'Smith', 'bryan_s', $1, TRUE),
           ('Odin', 'Johnson', 'odin_j', $2, FALSE),
           ('Damon', 'Lee', 'damon_l', $3, TRUE)

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home</title>
+</head>
+<body>
+  <h1>Welcome to Home</h1>
+  <form action="/join" method="POST">
+    <label for="passcode">Enter secret passcode to become a member:</label>
+    <input type="text" name="passcode" id="passcode">
+    <button type="submit">Submit</button>
+  </form>
+  <% if (error) { %>
+    <p><%= error %></p>
+  <% } %>
+</body>
+</html>

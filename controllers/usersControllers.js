@@ -31,27 +31,30 @@ const validateUser = [
     .trim()
     .custom((confirmPassword, { req }) => {
       if (confirmPassword !== req.body.password) {
-        throw new Error("Passwords do not match")
+        throw new Error("Passwords do not match");
       }
       return true;
     }),
 ];
 
+// Sign up page
 exports.index = async (req, res) => {
   res.render("index", {
     firstName: "",
     lastName: "",
     username: "",
     password: "",
-    confirmPassword: ""
+    confirmPassword: "",
   });
 };
 
+// Inputting sign up details
 exports.signup = [
   validateUser,
   async (req, res) => {
     const errors = validationResult(req);
-    const { firstName, lastName, username, password, confirmPassword } = req.body;
+    const { firstName, lastName, username, password, confirmPassword } =
+      req.body;
     if (!errors.isEmpty()) {
       return res.status(400).render("index", {
         errors: errors.array(),
@@ -59,14 +62,35 @@ exports.signup = [
         lastName,
         username,
         password,
-        confirmPassword
-      })
+        confirmPassword,
+      });
     }
 
     console.log("Adding user...");
     const hashedPassword = await bcrypt.hash(password, 10);
-    await db.addUser(firstName, lastName, username, hashedPassword);
+    const id = await db.addUser(firstName, lastName, username, hashedPassword);
     console.log("User added!");
-    res.redirect("/");
+    req.session.userId = id;
+    res.render("home", {error: null});
   },
 ];
+
+// Home page after signing up or logging in
+exports.home = (req, res) => {
+  res.render("home", {error: null});
+};
+
+// Check passcode to join as member
+exports.join = async (req, res) => {
+  const userId = req.session.userId
+  console.log(userId);
+  if (req.body.passcode === process.env.PASSCODE) {
+    // Update membership status
+    console.log("Matched passcode");
+    await db.updateMembershipStatus(userId)
+    res.render("home", {error: "You are now a club member!"});
+  } else {
+    // Incorrect passcode
+    res.render("home", {error: "Incorrect passcode"})
+  }
+}
