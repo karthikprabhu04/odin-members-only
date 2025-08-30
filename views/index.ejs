@@ -7,21 +7,22 @@
 </head>
 <body>
   <h1>Sign up!</h1>
+  <h3><%- include("partials/errors.ejs") %></h3>
   <form action="/signup" method="POST">
     <label for="firstName">First Name:</label>
-    <input type="text" name="firstName" id="firstName" required>
+    <input type="text" name="firstName" id="firstName" value="<%= firstName || '' %>" required>
 
     <label for="lastName">Last Name:</label>
-    <input type="text" name="lastName" id="lastName" required>
+    <input type="text" name="lastName" id="lastName" value="<%= lastName || '' %>" required>
 
     <label for="username">Username:</label>
-    <input type="text" name="username" id="username" required>
+    <input type="text" name="username" id="username" value="<%= username || '' %>" required>
 
     <label for="password">Password:</label>
-    <input type="text" name="password" id="password" required>
+    <input type="text" name="password" id="password" value="<%= password || '' %>" required>
 
     <label for="confirmPassword">Confirm Password:</label>
-    <input type="text" name="confirmPassword" id="confirmPassword" required>
+    <input type="text" name="confirmPassword" id="confirmPassword" value="<%= confirmPassword || '' %>" required>
 
     <button type="submit">Register</button>
   </form>
