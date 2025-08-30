@@ -1,5 +1,6 @@
 const { Client } = require("pg");
 require("dotenv").config();
+const bcrypt = require("bcryptjs");
 
 async function main() {
   console.log("seeding...");
@@ -24,12 +25,15 @@ async function main() {
     let countUsers = await client.query("SELECT COUNT(*) FROM users");
     if (parseInt(countUsers.rows[0].count) === 0) {
       // Insert mock users
+      const hashedPassword1 = await bcrypt.hash('password123', 10)
+      const hashedPassword2 = await bcrypt.hash('secret456', 10)
+      const hashedPassword3 = await bcrypt.hash('mypassword', 10)
       await client.query(`
         INSERT INTO users (first_name, last_name, username, password, membershipStatus) VALUES
-          ('Bryan', 'Smith', 'bryan_s', 'password123', TRUE),
-          ('Odin', 'Johnson', 'odin_j', 'secret456', FALSE),
-          ('Damon', 'Lee', 'damon_l', 'mypassword', TRUE)
-      `)
+          ('Bryan', 'Smith', 'bryan_s', $1, TRUE),
+          ('Odin', 'Johnson', 'odin_j', $2, FALSE),
+          ('Damon', 'Lee', 'damon_l', $3, TRUE)
+      `, [hashedPassword1, hashedPassword2, hashedPassword3])
     }
 
     // Create messages table
