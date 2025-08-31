@@ -1,7 +1,8 @@
 const express = require("express");
 const app = express();
 require("dotenv").config();
-require("./config/passport")
+require("./config/passport");
+require("./db/populatedb");
 
 const path = require("node:path");
 const usersRouter = require("./routes/usersRouter");
@@ -12,17 +13,19 @@ const flash = require("connect-flash");
 // Setup ejs and session
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
-app.use(session({
-  secret: process.env.SECRET,
-  resave: false,
-  saveUninitialized: false,
-  cookie: { secure: false}
-}))
+app.use(
+  session({
+    secret: process.env.SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: { secure: false },
+  })
+);
 app.use(express.urlencoded({ extended: true }));
 
 // Start passport
-app.use(passport.initialize())
-app.use(passport.session())
+app.use(passport.initialize());
+app.use(passport.session());
 app.use(flash());
 
 app.use("/", usersRouter);
