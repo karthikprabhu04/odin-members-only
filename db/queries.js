@@ -44,15 +44,21 @@ async function addNewMessage(title, content, userId) {
   );
 }
 
-async function getAllMessages() {
-  const { rows } = await pool.query(
-    `
-    SELECT users.username, messages.title, messages.content, messages.timestamp 
-    FROM messages 
-    JOIN users ON users.id = messages.user_id
-    ORDER BY messages.timestamp DESC;
-    `
-  );
+async function getAllMessages(membershipstatus) {
+  const query = membershipstatus
+    ? `
+      SELECT users.username, messages.title, messages.content, messages.timestamp 
+      FROM messages 
+      JOIN users ON users.id = messages.user_id
+      ORDER BY messages.timestamp DESC;
+      `
+    : `
+      SELECT title, content, timestamp 
+      FROM messages 
+      ORDER BY timestamp DESC;
+      `;
+  
+  const { rows } = await pool.query(query);
   return rows;
 }
 

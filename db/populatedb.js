@@ -41,7 +41,7 @@ async function main() {
       CREATE TABLE IF NOT EXISTS messages (
         id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
         title VARCHAR(255),
-        timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        timestamp TIMESTAMPTZ DEFAULT NOW(),
         content TEXT,
         user_id INTEGER REFERENCES users(id) ON DELETE CASCADE
       )

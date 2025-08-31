@@ -9,8 +9,8 @@
   <h1>Welcome to Home <%= user.username %></h1>
   <a href="/logout">Log out</a>
 
-  <% if (error) { %>
-    <p><%= error %></p>
+  <% if (error.length > 0) { %>
+    <p style="color:red;"><%= error[0] %></p>
   <% } %>
 
   <% if (!membershipStatus) { %>
@@ -35,7 +35,21 @@
   <!-- Display all messages -->
   <h2>Messages:</h2>
   <% messages.forEach(msg => {%>
-    <p><strong><%= msg.username %></strong> (<%= msg.timestamp %>)</p>
+    <% const date = new Date(msg.timestamp); %>
+    <p>
+      <strong>
+        <%= msg.username || "Anonymous" %>
+      </strong> 
+      (<%= date.toLocaleString("en-GB", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit"
+      }) %>)
+    </p>
+
     <p><%= msg.title %></p>
     <p><%= msg.content %></p>
     <hr>

@@ -78,11 +78,7 @@ exports.signup = [
 
     req.logIn(user, (err) => {
       if (err) return next(err);
-      res.render("home", {
-        error: null,
-        user: req.user,
-        membershipStatus: req.user.membershipstatus,
-      });
+      res.redirect("/home");
     });
   },
 ];
@@ -118,17 +114,10 @@ exports.join = async (req, res) => {
     await db.updateMembershipStatus(userId);
     req.user.membershipstatus = true;
     console.log(req.user.membershipstatus);
-    res.render("home", {
-      error: null,
-      user: req.user,
-      membershipStatus: req.user.membershipstatus,
-    });
+    res.redirect("/home");
   } else {
     // Incorrect passcode
-    res.render("home", {
-      error: "Incorrect passcode",
-      user: req.user,
-      membershipStatus: req.user.membershipstatus,
-    });
+    req.flash("error", "Incorrect passcode");
+    res.redirect("home");
   }
 };

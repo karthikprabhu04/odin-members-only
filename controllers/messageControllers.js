@@ -8,13 +8,14 @@ exports.index = (req, res) => {
 // Home page after signing up or logging in
 exports.home = async (req, res) => {
   if (!req.isAuthenticated()) {
-    res.redirect("/");
+    return res.redirect("/");
   }
 
-  const messages = await db.getAllMessages();
+  const messages = await db.getAllMessages(req.user.membershipstatus);
+  console.log(messages);
 
   res.render("home", {
-    error: null,
+    error: req.flash("error"),
     user: req.user,
     membershipStatus: req.user.membershipstatus,
     messages: messages,
