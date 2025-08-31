@@ -39,8 +39,8 @@ const validateUser = [
 ];
 
 // Sign up page
-exports.index = async (req, res) => {
-  res.render("index", {
+exports.getSignupPage = async (req, res) => {
+  res.render("signup", {
     firstName: "",
     lastName: "",
     username: "",
@@ -49,7 +49,7 @@ exports.index = async (req, res) => {
   });
 };
 
-// Inputting sign up details
+// Adding user
 exports.signup = [
   validateUser,
   async (req, res, next) => {
@@ -57,7 +57,7 @@ exports.signup = [
     const { firstName, lastName, username, password, confirmPassword } =
       req.body;
     if (!errors.isEmpty()) {
-      return res.status(400).render("index", {
+      return res.status(400).render("signup", {
         errors: errors.array(),
         firstName,
         lastName,
@@ -78,39 +78,17 @@ exports.signup = [
 
     req.logIn(user, (err) => {
       if (err) return next(err);
-      res.render("home", { error: null, user: req.user });
+      res.render("home", { error: null, user: req.user, membershipStatus: req.user.membershipstatus });
     })
   },
 ];
 
-// Home page after signing up or logging in
-exports.home = (req, res) => {
-  res.render("home", { error: null, user: req.user });
-};
-
-// Check passcode to join as member
-exports.join = async (req, res) => {
-  const userId = req.user.id
-
-  console.log(userId);
-
-  if (req.body.passcode === process.env.PASSCODE) {
-    // Update membership status
-    console.log("Matched passcode");
-    await db.updateMembershipStatus(userId);
-    res.render("home", { error: "You are now a club member!", user: req.user });
-  } else {
-    // Incorrect passcode
-    res.render("home", { error: "Incorrect passcode", user: req.user });
-  }
-};
-
 // Login
-exports.loginPage = (req, res) => {
+exports.getLoginPage = (req, res) => {
   res.render("login");
 };
 
-exports.loginCheck = passport.authenticate("local", {
+exports.login = passport.authenticate("local", {
     successRedirect: "/home",
     failureRedirect: "/login"
   });
@@ -121,6 +99,23 @@ exports.logout  = (req, res) => {
     if (err) {
       return next(err);
     }
-    res.redirect("/login")
+    res.redirect("/")
   })
 }
+
+// Check passcode to join as member
+exports.join = async (req, res) => {
+  const userId = req.user.id
+
+  if (req.body.passcode === process.env.PASSCODE) {
+    // Update membership status
+    console.log("Matched passcode");
+    await db.updateMembershipStatus(userId);
+    req.user.membershipstatus = true;
+    console.log(req.user.membershipstatus)
+    res.render("home", { error: null, user: req.user, membershipStatus: req.user.membershipstatus });
+  } else {
+    // Incorrect passcode
+    res.render("home", { error: "Incorrect passcode", user: req.user, membershipStatus: req.user.membershipstatus });
+  }
+};

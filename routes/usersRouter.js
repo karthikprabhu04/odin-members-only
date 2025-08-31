@@ -1,14 +1,24 @@
 const { Router } = require("express");
 const router = Router();
-const usersControllers = require("../controllers/usersControllers");
+const accountControllers = require("../controllers/accountControllers");
+const messageControllers = require("../controllers/messageControllers");
 
-router.get("/", usersControllers.index);
-router.post("/signup", usersControllers.signup);
-router.get("/home", usersControllers.home);
-router.post("/join", usersControllers.join);
+router.get("/", messageControllers.index);
+// Sign up
+router.get("/signup", accountControllers.getSignupPage);
+router.post("/signup", accountControllers.signup);
+// Log in
+router.get("/login", accountControllers.getLoginPage);
+router.post("/login", accountControllers.login);
+// Log out
+router.get("/logout", accountControllers.logout);
 
-router.get("/login", usersControllers.loginPage);
-router.post("/login", usersControllers.loginCheck);
-router.get("/logout", usersControllers.logout);
+// Home page with messsages
+router.get("/home", messageControllers.home);
+// Join as member
+router.post("/join", accountControllers.join);
+
+
+
 
 module.exports = router;

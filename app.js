@@ -7,7 +7,7 @@ const session = require("express-session");
 const passport = require("passport");
 require("./config/passport")
 
-
+// Setup ejs and session
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 app.use(session({
@@ -17,12 +17,14 @@ app.use(session({
   cookie: { secure: false}
 }))
 app.use(express.urlencoded({ extended: true }));
+
 // Start passport
 app.use(passport.initialize())
 app.use(passport.session())
 
 app.use("/", usersRouter);
 
+// Start server
 PORT = process.env.PORT || 3000;
 app.listen(3000, (err) => {
   if (err) {
