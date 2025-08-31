@@ -22,6 +22,9 @@
   <% } else { %>
     <p>Club member account</p>
   <% } %>
+  <% if (adminstatus) { %>
+    <p>ADMIN</p>
+  <% } %>
 
   <p>Create a new message!</p>
   <form action="/createMessage" method="POST">
@@ -52,6 +55,13 @@
 
     <p><%= msg.title %></p>
     <p><%= msg.content %></p>
+
+    <% if (adminstatus) { %>
+      <form action="/deleteMessage/<%= msg.id %>" method="POST">
+        <button type="submit">Delete</button>
+      </form>
+    <% } %>
+
     <hr>
   <% }) %>
 </body>

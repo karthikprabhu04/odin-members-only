@@ -12,13 +12,15 @@ exports.home = async (req, res) => {
   }
 
   const messages = await db.getAllMessages(req.user.membershipstatus);
-  console.log(messages);
+  const adminstatus = await db.getAdminStatus(req.user.id);
+  console.log("Admin status", adminstatus)
 
   res.render("home", {
     error: req.flash("error"),
     user: req.user,
     membershipStatus: req.user.membershipstatus,
     messages: messages,
+    adminstatus: adminstatus,
   });
 };
 
@@ -26,3 +28,8 @@ exports.createMessage = async (req, res) => {
   await db.addNewMessage(req.body.title, req.body.content, req.user.id);
   res.redirect("/home");
 };
+
+exports.deleteMessage = async (req, res) => {
+  await db.removeMessage(req.params.id);
+  res.redirect("/home");
+}

@@ -24,6 +24,10 @@
     <label for="confirmPassword">Confirm Password:</label>
     <input type="password" name="confirmPassword" id="confirmPassword" value="<%= confirmPassword || '' %>" required>
 
+    <input type="hidden" name="adminstatus" value="FALSE">
+    <label for="adminstatus">Admin?</label>
+    <input type="checkbox" name="adminstatus" id="adminstatus" value="<%= adminstatus || 'TRUE' %>">
+
     <button type="submit">Register</button>
   </form>
   <p> Already have an account? <a href="/login">Log in!</a></p>

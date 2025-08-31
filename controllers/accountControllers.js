@@ -46,6 +46,7 @@ exports.getSignupPage = async (req, res) => {
     username: "",
     password: "",
     confirmPassword: "",
+    adminstatus: "",
   });
 };
 
@@ -54,7 +55,7 @@ exports.signup = [
   validateUser,
   async (req, res, next) => {
     const errors = validationResult(req);
-    const { firstName, lastName, username, password, confirmPassword } =
+    const { firstName, lastName, username, password, confirmPassword, adminstatus } =
       req.body;
     if (!errors.isEmpty()) {
       return res.status(400).render("signup", {
@@ -64,12 +65,13 @@ exports.signup = [
         username,
         password,
         confirmPassword,
+        adminstatus,
       });
     }
 
     console.log("Adding user...");
     const hashedPassword = await bcrypt.hash(password, 10);
-    const id = await db.addUser(firstName, lastName, username, hashedPassword);
+    const id = await db.addUser(firstName, lastName, username, hashedPassword, adminstatus);
     console.log("User added!");
 
     const user = await db.findUserById(id);

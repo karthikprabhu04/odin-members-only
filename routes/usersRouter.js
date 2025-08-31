@@ -21,6 +21,8 @@ router.post("/join", accountControllers.join);
 // Create message
 router.post("/createMessage", messageControllers.createMessage)
 
+// Delete message (for admins)
+router.post("/deleteMessage/:id", messageControllers.deleteMessage)
 
 
 
