@@ -37,7 +37,7 @@ async function findUserById(id) {
 async function addNewMessage(title, content, userId) {
   await pool.query(
     `
-    INSERT INTO messages (title, content, user_id) VALUES
+    INSERT INTO messageslist (title, content, user_id) VALUES
     ($1, $2, $3)
     `,
     [title, content, userId]
@@ -47,14 +47,14 @@ async function addNewMessage(title, content, userId) {
 async function getAllMessages(membershipstatus) {
   const query = membershipstatus
     ? `
-      SELECT messages.id, users.username, messages.title, messages.content, messages.timestamp 
-      FROM messages 
-      JOIN users ON users.id = messages.user_id
-      ORDER BY messages.timestamp DESC;
+      SELECT messageslist.id, users.username, messageslist.title, messageslist.content, messageslist.timestamp 
+      FROM messageslist 
+      JOIN users ON users.id = messageslist.user_id
+      ORDER BY messageslist.timestamp DESC;
       `
     : `
       SELECT title, content, timestamp 
-      FROM messages 
+      FROM messageslist 
       ORDER BY timestamp DESC;
       `;
 
@@ -72,7 +72,7 @@ async function getAdminStatus(userId) {
 
 async function removeMessage(id) {
   await pool.query(`
-    DELETE FROM messages WHERE id = $1
+    DELETE FROM messageslist WHERE id = $1
     `, [id])
 }
 

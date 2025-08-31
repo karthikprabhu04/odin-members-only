@@ -39,7 +39,7 @@ async function main() {
 
     // Create messages table
     await client.query(`
-      CREATE TABLE IF NOT EXISTS messages (
+      CREATE TABLE IF NOT EXISTS messageslist (
         id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
         title VARCHAR(255),
         timestamp TIMESTAMPTZ DEFAULT NOW(),
@@ -48,10 +48,10 @@ async function main() {
       )
     `);
 
-    let countMessages = await client.query("SELECT COUNT(*) FROM messages");
+    let countMessages = await client.query("SELECT COUNT(*) FROM messageslist");
     if (parseInt(countMessages.rows[0].count) === 0) {
       await client.query(`
-        INSERT INTO messages (title, content, user_id) VALUES
+        INSERT INTO messageslist (title, content, user_id) VALUES
           ('Welcome', 'Hello everyone! Excited to join this platform.', 1),
           ('Question', 'Does anyone know how to reset their password?', 2),
           ('Announcement', 'Our new feature goes live tomorrow!', 3)
