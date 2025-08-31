@@ -18,6 +18,9 @@ router.get("/home", messageControllers.home);
 // Join as member
 router.post("/join", accountControllers.join);
 
+// Create message
+router.post("/createMessage", messageControllers.createMessage)
+
 
 
 

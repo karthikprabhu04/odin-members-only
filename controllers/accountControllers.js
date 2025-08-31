@@ -72,50 +72,63 @@ exports.signup = [
     const id = await db.addUser(firstName, lastName, username, hashedPassword);
     console.log("User added!");
 
-    const user = await db.findUserById(id)
+    const user = await db.findUserById(id);
     // req.session.userId = id;
-    console.log(user)
+    console.log(user);
 
     req.logIn(user, (err) => {
       if (err) return next(err);
-      res.render("home", { error: null, user: req.user, membershipStatus: req.user.membershipstatus });
-    })
+      res.render("home", {
+        error: null,
+        user: req.user,
+        membershipStatus: req.user.membershipstatus,
+      });
+    });
   },
 ];
 
 // Login
 exports.getLoginPage = (req, res) => {
-  res.render("login");
+  res.render("login", { error: req.flash("error")});
 };
 
 exports.login = passport.authenticate("local", {
-    successRedirect: "/home",
-    failureRedirect: "/login"
-  });
+  successRedirect: "/home",
+  failureRedirect: "/login",
+  failureFlash: "Username or password is incorrect",
+});
 
 // Logout
-exports.logout  = (req, res) => {
+exports.logout = (req, res, next) => {
   req.logout((err) => {
     if (err) {
       return next(err);
     }
-    res.redirect("/")
-  })
-}
+    res.redirect("/");
+  });
+};
 
 // Check passcode to join as member
 exports.join = async (req, res) => {
-  const userId = req.user.id
+  const userId = req.user.id;
 
   if (req.body.passcode === process.env.PASSCODE) {
     // Update membership status
     console.log("Matched passcode");
     await db.updateMembershipStatus(userId);
     req.user.membershipstatus = true;
-    console.log(req.user.membershipstatus)
-    res.render("home", { error: null, user: req.user, membershipStatus: req.user.membershipstatus });
+    console.log(req.user.membershipstatus);
+    res.render("home", {
+      error: null,
+      user: req.user,
+      membershipStatus: req.user.membershipstatus,
+    });
   } else {
     // Incorrect passcode
-    res.render("home", { error: "Incorrect passcode", user: req.user, membershipStatus: req.user.membershipstatus });
+    res.render("home", {
+      error: "Incorrect passcode",
+      user: req.user,
+      membershipStatus: req.user.membershipstatus,
+    });
   }
 };

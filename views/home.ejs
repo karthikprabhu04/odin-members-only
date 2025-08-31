@@ -9,6 +9,10 @@
   <h1>Welcome to Home <%= user.username %></h1>
   <a href="/logout">Log out</a>
 
+  <% if (error) { %>
+    <p><%= error %></p>
+  <% } %>
+
   <% if (!membershipStatus) { %>
     <form action="/join" method="POST">
       <label for="passcode">Enter secret passcode to become a member:</label>
@@ -16,11 +20,25 @@
       <button type="submit">Submit</button>
     </form>
   <% } else { %>
-    <p>You are currently a club member!</p>
+    <p>Club member account</p>
   <% } %>
 
-  <% if (error) { %>
-    <p><%= error %></p>
-  <% } %>
+  <p>Create a new message!</p>
+  <form action="/createMessage" method="POST">
+    <label for="title">Title:</label>
+    <input type="text" name="title" id="title" required>
+    <label for="content">Content:</label>
+    <textarea name="content" id="content" required></textarea>
+    <button type="submit">Post</button>
+  </form>
+
+  <!-- Display all messages -->
+  <h2>Messages:</h2>
+  <% messages.forEach(msg => {%>
+    <p><strong><%= msg.username %></strong> (<%= msg.timestamp %>)</p>
+    <p><%= msg.title %></p>
+    <p><%= msg.content %></p>
+    <hr>
+  <% }) %>
 </body>
 </html>

@@ -1,11 +1,13 @@
 const express = require("express");
 const app = express();
 require("dotenv").config();
+require("./config/passport")
+
 const path = require("node:path");
 const usersRouter = require("./routes/usersRouter");
 const session = require("express-session");
 const passport = require("passport");
-require("./config/passport")
+const flash = require("connect-flash");
 
 // Setup ejs and session
 app.set("views", path.join(__dirname, "views"));
@@ -21,6 +23,7 @@ app.use(express.urlencoded({ extended: true }));
 // Start passport
 app.use(passport.initialize())
 app.use(passport.session())
+app.use(flash());
 
 app.use("/", usersRouter);
 

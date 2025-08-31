@@ -14,3 +14,4 @@ messages:
 - timestamp
 - content
 - userid (references user(id))
+
