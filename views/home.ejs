@@ -6,7 +6,8 @@
   <title>Home</title>
 </head>
 <body>
-  <h1>Welcome to Home</h1>
+  <h1>Welcome to Home <%= user.username %></h1>
+  <a href="/logout">Log out</a>
   <form action="/join" method="POST">
     <label for="passcode">Enter secret passcode to become a member:</label>
     <input type="text" name="passcode" id="passcode">

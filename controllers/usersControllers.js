@@ -1,6 +1,7 @@
 const db = require("../db/queries");
 const { body, validationResult } = require("express-validator");
 const bcrypt = require("bcryptjs");
+const passport = require("passport");
 
 const validateUser = [
   body("firstName")
@@ -51,7 +52,7 @@ exports.index = async (req, res) => {
 // Inputting sign up details
 exports.signup = [
   validateUser,
-  async (req, res) => {
+  async (req, res, next) => {
     const errors = validationResult(req);
     const { firstName, lastName, username, password, confirmPassword } =
       req.body;
@@ -70,27 +71,56 @@ exports.signup = [
     const hashedPassword = await bcrypt.hash(password, 10);
     const id = await db.addUser(firstName, lastName, username, hashedPassword);
     console.log("User added!");
-    req.session.userId = id;
-    res.render("home", {error: null});
+
+    const user = await db.findUserById(id)
+    // req.session.userId = id;
+    console.log(user)
+
+    req.logIn(user, (err) => {
+      if (err) return next(err);
+      res.render("home", { error: null, user: req.user });
+    })
   },
 ];
 
 // Home page after signing up or logging in
 exports.home = (req, res) => {
-  res.render("home", {error: null});
+  res.render("home", { error: null, user: req.user });
 };
 
 // Check passcode to join as member
 exports.join = async (req, res) => {
-  const userId = req.session.userId
+  const userId = req.user.id
+
   console.log(userId);
+
   if (req.body.passcode === process.env.PASSCODE) {
     // Update membership status
     console.log("Matched passcode");
-    await db.updateMembershipStatus(userId)
-    res.render("home", {error: "You are now a club member!"});
+    await db.updateMembershipStatus(userId);
+    res.render("home", { error: "You are now a club member!", user: req.user });
   } else {
     // Incorrect passcode
-    res.render("home", {error: "Incorrect passcode"})
+    res.render("home", { error: "Incorrect passcode", user: req.user });
   }
+};
+
+// Login
+exports.loginPage = (req, res) => {
+  res.render("login");
+};
+
+exports.loginCheck = passport.authenticate("local", {
+    successRedirect: "/home",
+    failureRedirect: "/login"
+  });
+
+// Logout
+exports.logout  = (req, res) => {
+  req.logout((err) => {
+    if (err) {
+      return next(err);
+    }
+    res.redirect("/login")
+  })
 }
